@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Rocky's REST API Portal - Free API endpoints for developers"/>
+  <meta name="theme-color" content="#09090b"/>
+  <title>Rest API Portal - Rocky</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #09090b; --surface: #111113; --border: #27272a;
+      --accent: #6366f1; --accent2: #8b5cf6;
+      --text: #fafafa; --muted: #71717a;
+      --tg: #229ED9;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(9,9,11,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.2rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    .hero { padding: 140px 2rem 80px; text-align: center; position: relative; overflow: hidden; }
+    .hero::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3);
+      color: var(--accent); padding: 4px 14px; border-radius: 999px;
+      font-size: 0.8rem; margin-bottom: 1.5rem;
+    }
+    h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.2rem; }
+    h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p { color: var(--muted); font-size: 1.1rem; max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.7; }
+    .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn { padding: 12px 28px; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; border: none; }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent); background: rgba(99,102,241,0.08); }
+
+    .stats {
+      display: flex; justify-content: center; gap: 3rem; padding: 3rem 2rem;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+
+    .section { padding: 80px 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-title { text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 0.8rem; }
+    .section-sub { text-align: center; color: var(--muted); margin-bottom: 3rem; font-size: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.8rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .card-icon {
+      width: 44px; height: 44px; background: rgba(99,102,241,0.15);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1rem;
+    }
+    .card h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+    .card p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+    #terms { border-top: 1px solid var(--border); }
+    .terms-content { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; }
+    .terms-content h3 { margin-bottom: 0.8rem; color: var(--accent); }
+    .terms-content ul { padding-left: 1.5rem; color: var(--muted); font-size: 0.9rem; line-height: 2; }
+    .terms-content p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-top: 1rem; }
+
+    #contact { border-top: 1px solid var(--border); }
+    .contact-card {
+      max-width: 500px; margin: 0 auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 3rem 2rem; text-align: center;
+    }
+
+    footer { border-top: 1px solid var(--border); padding: 3rem 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+    .footer-logo {
+      font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    footer a { color: var(--tg); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer .gh-link { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">◆ Rocky API</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#terms">Terms</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="badge">✦ Free REST API for Everyone</div>
+    <h1>Powerful <span>REST API</span><br/>Built for Developers</h1>
+    <p>Access powerful API endpoints for your projects completely free, with no authentication required. Start building amazing applications today!</p>
+    <div class="btn-group">
+      <a href="/docs" class="btn btn-primary">View Dashboard</a>
+      <a href="#features" class="btn btn-secondary">Learn More</a>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">8</div><div class="stat-label">Total APIs</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Categories</div></div>
+    <div class="stat"><div class="stat-num">0</div><div class="stat-label">Auth Required</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Free Forever</div></div>
+  </div>
+
+  <section class="section" id="features">
+    <h2 class="section-title">Why Choose Rocky API?</h2>
+    <p class="section-sub">Our REST API is designed with developers in mind.</p>
+    <div class="grid">
+      <div class="card"><div class="card-icon">🔓</div><h3>No Authentication</h3><p>Access our APIs instantly without API keys. Perfect for rapid prototyping and learning.</p></div>
+      <div class="card"><div class="card-icon">⚡</div><h3>High Performance</h3><p>Fast response times and reliable service. Our infrastructure is optimized for speed.</p></div>
+      <div class="card"><div class="card-icon">📚</div><h3>Comprehensive Docs</h3><p>Detailed documentation with examples and use cases for every endpoint.</p></div>
+      <div class="card"><div class="card-icon">🗂️</div><h3>Rich Data Sources</h3><p>Jokes, quotes, AI, media downloads and much more available.</p></div>
+      <div class="card"><div class="card-icon">📊</div><h3>Live Dashboard</h3><p>Test all API endpoints through our interactive dashboard in real time.</p></div>
+      <div class="card"><div class="card-icon">🛠️</div><h3>Always Updated</h3><p>New endpoints added regularly. Rocky keeps the API fresh constantly.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="terms">
+    <h2 class="section-title">Terms of Service</h2>
+    <p class="section-sub">By using our API, you agree to comply with these terms.</p>
+    <div class="terms-content">
+      <h3>Usage Guidelines</h3>
+      <ul>
+        <li>Use the API for lawful purposes only</li>
+        <li>Do not attempt to overload or disrupt our services</li>
+        <li>Respect rate limits and usage quotas</li>
+        <li>Attribute our API when using it in your applications</li>
+      </ul>
+      <p><strong>Limitations of Liability:</strong> Our API is provided "as is" without any warranties. We are not liable for any damages arising from the use of our API.</p>
+      <p><strong>Data Privacy:</strong> We respect your privacy and handle all data carefully. By using our API, you consent to our data practices.</p>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <h2 class="section-title">Get in Touch</h2>
+    <p class="section-sub">Have questions or need support? Contact rocky directly.</p>
+    <div class="contact-card">
+      <div style="
+        width:80px; height:80px;
+        background: linear-gradient(135deg, #229ED9, #1a7fb5);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.2rem;
+      ">✈️</div>
+      <h3 style="font-size:1.3rem; margin-bottom:0.6rem">Message on Telegram</h3>
+      <p style="color:var(--muted); font-size:0.9rem; margin-bottom:2rem; line-height:1.7">
+        For API support, bug reports, or any questions —<br/>reach out directly on Telegram.
+      </p>
+      <a
+        href="https://t.me/alveeevanrocky320"
+        target="_blank"
+        class="btn"
+        style="background:linear-gradient(135deg,#229ED9,#1a7fb5); color:white; padding:14px 32px; font-size:1rem; text-decoration:none; border-radius:10px; display:inline-flex; align-items:center; gap:0.7rem;"
+      >
+        ✈️ Message on Telegram
+      </a>
+      <p style="color:var(--muted); font-size:0.82rem; margin-top:1.2rem">
+        Telegram: <strong style="color:#229ED9">@alveeevanrocky320</strong>
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">◆ Rocky API</div>
+    <p>Providing developers with powerful, easy-to-use API solutions.</p>
+    <p style="margin-top:0.8rem">
+      ✈️ Telegram: <a href="https://t.me/alveeevanrocky320" target="_blank">@alveeevanrocky320</a>
+    </p>
+    <p style="margin-top:0.4rem">
+      🔗 Source Code: <a href="https://github.com/messengergoatbot320-lang/Rocky-Bot-320" target="_blank" class="gh-link">GitHub — Rocky-Bot-320</a>
+    </p>
+    <p style="margin-top:1rem; color:#3f3f46">
+      © 2025 Rocky API. All rights reserved. | Operated by <strong style="color:var(--muted)">rocky</strong>
+    </p>
+  </footer>
+
+</body>
+</html>
